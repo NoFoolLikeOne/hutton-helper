@@ -938,4 +938,4 @@ def cmdr_data(data, is_beta):
         cmdr_data.last = None
 
 def plugin_stop():
-print "Farewell cruel world!"
+    print "Farewell cruel world!"
