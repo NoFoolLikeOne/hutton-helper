@@ -123,7 +123,7 @@ def upgrade_callback():
         return
 
     this_fullpath = os.path.realpath(__file__)
-    this_filepath,this_extension = os.path.splitext(this_fullpath)
+    this_filepath, _ext = os.path.splitext(this_fullpath)
     corrected_fullpath = this_filepath + ".py" # Somehow we might need this to stop it hitting the pyo file?
 
     # sys.stderr.write("path is %s\n" % this_filepath)
@@ -174,9 +174,7 @@ def OpenUrl(UrlToOpen):
     webbrowser.open_new(UrlToOpen)
 
 def news_update():
-
 	this.parent.after(300000,news_update)
-
 	try:
 		url = "http://hot.forthemug.com:4567/news.json/"
 		response = requests.get(url)
@@ -195,17 +193,17 @@ def news_update():
 		this.news_headline['text'] = "Could not update news from HH server"
 
 def influence_data_call():
-	try:
-		url = "http://hot.forthemug.com:4567/msgbox_influence.json"
-		response = requests.get(url)
-		influence_data = response.json()
-		#sys.stderr.write("got news!'{HDLN}' and link '{LNK}'\n".format(HDLN=news_data['headline'], LNK=news_data['link']))
-		if (response.status_code == 200):
-			tkMessageBox.showinfo("Hutton Influence Data", "\n".join(influence_data))
-		else:
-			tkMessageBox.showinfo("Hutton Influence Data", "Could not get Influence Data")
-	except:
-		tkMessageBox.showinfo("Hutton Influence Data", "Did not Receive response from HH Server")
+    try:
+        url = "http://hot.forthemug.com:4567/msgbox_influence.json"
+        response = requests.get(url)
+        influence_data = response.json()
+        #sys.stderr.write("got news!'{HDLN}' and link '{LNK}'\n".format(HDLN=news_data['headline'], LNK=news_data['link']))
+        if (response.status_code == 200):
+            tkMessageBox.showinfo("Hutton Influence Data", "\n".join(influence_data))
+        else:
+            tkMessageBox.showinfo("Hutton Influence Data", "Could not get Influence Data")
+    except:
+        tkMessageBox.showinfo("Hutton Influence Data", "Did not Receive response from HH Server")
 
 def daily_info_call():
 	try:
@@ -234,7 +232,6 @@ def explo_credits(cmdr):
 	response = requests.get(credit_url)
 	json_data = response.json()
 	this.exploration_status['text'] = "{:,.0f} credits".format(float(json_data['ExploCredits']))
-
 
 def plugin_app(parent):
 
@@ -355,45 +352,45 @@ def journal_entry(cmdr, is_beta, system, station, entry, state):
         this.status['text'] = "Community Goal Data Received"
         url_transmit_cg = 'http://forthemug.com:4567/communitygoal'
         headers = {'content-type': 'application/octet-stream','content-encoding': 'zlib'}
-	print ('CG updating')
-	for goal in entry['CurrentGoals']:
+        print ('CG updating')
+        for goal in entry['CurrentGoals']:
 
-		if not goal['IsComplete']: #v0.2Collect Active CG only
-			"""
-  			 First Extract CG Data
- 			"""
-   			communitygoalID = goal['CGID']
-			communitygoalName = goal['Title']
-        		contributionsTotal= goal['CurrentTotal']
-        		contributorsNum = goal['NumContributors']
-        		contribution = goal['PlayerContribution']
-        		percentileBand = goal['PlayerPercentileBand']
-			#print ('CG Variables Calculated')
-			"""
-  			Build the Data Set to Submit, based on the Entry field number from the form.
- 			"""
-			form_data = {
-				'entry.1465819909' : communitygoalID,
-				'entry.2023048714' : communitygoalName,
-        			'entry.617265888' : contributionsTotal,
-       				'entry.1469183421' : contributorsNum,
-        			'entry.2011125544' : contribution,
-        			'entry.1759162752' : percentileBand
-        			}
-			url = "https://docs.google.com/forms/d/e/1FAIpQLScJHvd9MNKMMNGpjZtlcT74u6Wnhcgesqz38a8JWBC94Se2Dg/formResponse"
-			"""
-  			 Request URl as a POST with the Form URL plus send the Form Data to each entry.
- 			"""
-			try:
-				r = requests.post(url, data=form_data)
-    				if r.status_code == 200:
-        				#print ('URL Success')
-					this.msg = 'CG Post Success'
-    				else:
-					#print ('URL Fail' + str(r.status_code))
-					this.msg = 'CG Post Failed'
-			except:
-				this.msg = 'CG Post Exception'
+            if not goal['IsComplete']: #v0.2Collect Active CG only
+                """
+                First Extract CG Data
+                """
+                communitygoalID = goal['CGID']
+                communitygoalName = goal['Title']
+                contributionsTotal= goal['CurrentTotal']
+                contributorsNum = goal['NumContributors']
+                contribution = goal['PlayerContribution']
+                percentileBand = goal['PlayerPercentileBand']
+                #print ('CG Variables Calculated')
+                """
+                Build the Data Set to Submit, based on the Entry field number from the form.
+                """
+                form_data = {
+                    'entry.1465819909' : communitygoalID,
+                    'entry.2023048714' : communitygoalName,
+                    'entry.617265888' : contributionsTotal,
+                    'entry.1469183421' : contributorsNum,
+                    'entry.2011125544' : contribution,
+                    'entry.1759162752' : percentileBand
+                    }
+                url = "https://docs.google.com/forms/d/e/1FAIpQLScJHvd9MNKMMNGpjZtlcT74u6Wnhcgesqz38a8JWBC94Se2Dg/formResponse"
+                """
+                Request URl as a POST with the Form URL plus send the Form Data to each entry.
+                """
+                try:
+                    r = requests.post(url, data=form_data)
+                    if r.status_code == 200:
+                        #print ('URL Success')
+                        this.msg = 'CG Post Success'
+                    else:
+                        #print ('URL Fail' + str(r.status_code))
+                        this.msg = 'CG Post Failed'
+                except:
+                    this.msg = 'CG Post Exception'
 
         response = requests.post(url_transmit_cg, data=transmit_json, headers=headers, timeout=7)
 
@@ -837,31 +834,31 @@ def journal_entry(cmdr, is_beta, system, station, entry, state):
             this.status['text'] = "You have jumped {:,.2f} Light Years in total".format(float(json_data['LYTotal']))
 
         if "scan today" in entry['Message']:
-                url = "http://forthemug.com:4567/scantoday.json/{}".format(cmdr)
-                response = requests.get(url)
-                json_data = response.json()
-                this.status['text'] = "You have scanned {:,.0f} objects today".format(float(json_data['ScanToday']))
+            url = "http://forthemug.com:4567/scantoday.json/{}".format(cmdr)
+            response = requests.get(url)
+            json_data = response.json()
+            this.status['text'] = "You have scanned {:,.0f} objects today".format(float(json_data['ScanToday']))
 
         if "scan week" in entry['Message']:
-                url = "http://forthemug.com:4567/scanweek.json/{}".format(cmdr)
-                response = requests.get(url)
-                json_data = response.json()
-                this.status['text'] = "You have scanned {:,.0f} objects this week".format(float(json_data['ScanWeek']))
+            url = "http://forthemug.com:4567/scanweek.json/{}".format(cmdr)
+            response = requests.get(url)
+            json_data = response.json()
+            this.status['text'] = "You have scanned {:,.0f} objects this week".format(float(json_data['ScanWeek']))
 
         if "scan total" in entry['Message']:
-                url = "http://forthemug.com:4567/scantotal.json/{}".format(cmdr)
-                response = requests.get(url)
-                json_data = response.json()
-                this.status['text'] = "You have scanned {:,.0f} objects in total".format(float(json_data['ScanTotal']))
+            url = "http://forthemug.com:4567/scantotal.json/{}".format(cmdr)
+            response = requests.get(url)
+            json_data = response.json()
+            this.status['text'] = "You have scanned {:,.0f} objects in total".format(float(json_data['ScanTotal']))
 
         if "my hutton run" in entry['Message']:
-                url = "http://forthemug.com:4567/myhuttonrun.json/{}".format(cmdr)
-                response = requests.get(url)
-                json_data = response.json()
-                if json_data['SecondCount'] == "0" :
-                    this.status['text'] = "You have not completed a Hutton Run"
-                else:
-                    this.status['text'] = "Your best Hutton Run is {}".format(json_data['TravelTime'])
+            url = "http://forthemug.com:4567/myhuttonrun.json/{}".format(cmdr)
+            response = requests.get(url)
+            json_data = response.json()
+            if json_data['SecondCount'] == "0" :
+                this.status['text'] = "You have not completed a Hutton Run"
+            else:
+                this.status['text'] = "Your best Hutton Run is {}".format(json_data['TravelTime'])
 
         if "best hutton run" in entry['Message']:
             url = "http://forthemug.com:4567/besthuttonrun.json/{}".format(cmdr)
@@ -880,8 +877,6 @@ def journal_entry(cmdr, is_beta, system, station, entry, state):
                 response = requests.post(url_transmit_shoutout, data=transmit_json, headers=headers, timeout=7)
             if json_data['online'] == "false":
                 this.status['text'] = "There is no LIVE DJ at the moment... please try again later"
-
-
 
 	if entry['event'] == 'CommunityGoal':
 		#print ('CG updating')
@@ -924,9 +919,6 @@ def journal_entry(cmdr, is_beta, system, station, entry, state):
 				except:
 					this.msg = 'CG Post Exception'
 
-
-
-
 def cmdr_data(data, is_beta):
     """
     Obtained new data from Frontier about our commander, location and ships
@@ -942,8 +934,8 @@ def cmdr_data(data, is_beta):
         transmit_json = zlib.compress(data2)
         url_transmit_dock = 'http://forthemug.com:4567/docked'
         headers = {'content-type': 'application/octet-stream','content-encoding': 'zlib'}
-        response = requests.post(url_transmit_dock, data=transmit_json, headers=headers, timeout=7)
+        _response = requests.post(url_transmit_dock, data=transmit_json, headers=headers, timeout=7)
         cmdr_data.last = None
 
 def plugin_stop():
-	print "Farewell cruel world!"
+print "Farewell cruel world!"
